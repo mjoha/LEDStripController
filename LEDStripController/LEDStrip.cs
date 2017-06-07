@@ -29,6 +29,8 @@ namespace LEDStripController
         private bool turnedOn = true;
         private Socket sock = new Socket(AddressFamily.InterNetwork,SocketType.Dgram,ProtocolType.Udp);
         private List<LED> LEDs = new List<LED>();
+        private ScreenTracker screen = new ScreenTracker();
+        private AudioTracker audio = new AudioTracker();
 
 
         public LEDStrip(Color col, string ip, string prof, int num)
@@ -272,8 +274,14 @@ namespace LEDStripController
 
         private void gamingProfile()
         {
-
+            profileEvent = audio.mic.screamType;
+            if (profileEvent != "NONE")
+            {
+                this.Color = screen.getDominantColor();
+            }
+            setLEDs();
         }
+
 
 
         private void sendUDP(string str)
@@ -286,6 +294,5 @@ namespace LEDStripController
                 sock.SendTo(sendBuffer, sendBuffer.Length, SocketFlags.None, endPoint);
             }
         }
-
     }
 }
