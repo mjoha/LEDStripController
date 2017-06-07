@@ -16,9 +16,6 @@ namespace LEDStripController
         {
 
         }
-        /*MMDeviceEnumerator devEnum = new MMDeviceEnumerator();
-        MMDevice defaultDevice = devEnum.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Multimedia);
-        float currVolume = defaultDevice.AudioMeterInformation.MasterPeakValue;
-                return (int) (currVolume* 100);*/
+
     }
 }
