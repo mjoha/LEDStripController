@@ -3,21 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace LEDStripController
 {
     class ScreenTracker
     {
-        public struct Screen
+        public ScreenTracker()
         {
-
         }
 
-        public const int test = 0;
-
-        /*
-          
-                 public Color getDominantColor()
+        public Color getDominantColor()
         {
             using (Bitmap bmp = new Bitmap(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height, PixelFormat.Format32bppArgb))
             {
@@ -71,6 +67,5 @@ namespace LEDStripController
                 }
             }
         }
-         */
     }
 }

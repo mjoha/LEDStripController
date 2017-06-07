@@ -29,6 +29,8 @@ namespace LEDStripController
         private bool turnedOn = true;
         private Socket sock = new Socket(AddressFamily.InterNetwork,SocketType.Dgram,ProtocolType.Udp);
         private List<LED> LEDs = new List<LED>();
+        private ScreenTracker screen = new ScreenTracker();
+        private AudioTracker audio = new AudioTracker();
 
 
         public LEDStrip(Color col, string ip, string prof, int num)
@@ -272,66 +274,14 @@ namespace LEDStripController
 
         private void gamingProfile()
         {
-            int level = screamLevel();
-            if(level > 8)
+            profileEvent = audio.mic.screamType;
+            if (profileEvent != "NONE")
             {
-                screaming = true;
-                if (level > 8 && level < 20)
-                {
-                    profileEvent = "YELLOWSCREAM";
-                }
-                else if (level >= 20)
-                {
-                    profileEvent = "REDSCREAM";
-                }
-                setLEDs();
-                profileEvent = "NONE";
+                this.Color = screen.getDominantColor();
             }
-            else
-            {
-                this.Color = getDominantColor();
-                setLEDs();
-            }
+            setLEDs();
         }
 
-
-        private int screamLevel()
-        {
-            if (!screaming)
-            {
-                MMDeviceEnumerator devEnum = new MMDeviceEnumerator();
-                MMDevice defaultDevice = devEnum.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Multimedia);
-                float currVolume = defaultDevice.AudioMeterInformation.MasterPeakValue;
-                return (int)(currVolume * 100);
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public void runTimer()
-        {
-            System.Timers.Timer aTimer = new System.Timers.Timer(10000);
-
-            aTimer.Elapsed += new ElapsedEventHandler(RunEvent);
-            aTimer.Interval = 1000;
-            aTimer.Enabled = true;
-        }
-
-        //This method will get called every second until the timer stops or the program exits.
-        public void RunEvent(object source, ElapsedEventArgs e)
-        {
-            if (screaming)
-            {
-                screamCoolDownCounter++;
-                if (screamCoolDownCounter == 5)
-                {
-                    screaming = false;
-                    screamCoolDownCounter = 0;
-                }
-            }
-        }
 
 
         private void sendUDP(string str)
@@ -342,61 +292,6 @@ namespace LEDStripController
                 IPEndPoint endPoint = new IPEndPoint(serverAddr, 5005);
                 byte[] sendBuffer = Encoding.ASCII.GetBytes(str);
                 sock.SendTo(sendBuffer, sendBuffer.Length, SocketFlags.None, endPoint);
-            }
-        }
-
-        public Color getDominantColor()
-        {
-            using (Bitmap bmp = new Bitmap(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height, PixelFormat.Format32bppArgb))
-            {
-                using (Graphics screenGraph = Graphics.FromImage(bmp))
-                {
-                    screenGraph.CopyFromScreen(SystemInformation.VirtualScreen.X, SystemInformation.VirtualScreen.Y, 0, 0, SystemInformation.VirtualScreen.Size, CopyPixelOperation.SourceCopy);
-
-                    if (bmp == null)
-                    {
-                        throw new ArgumentNullException("bmp");
-                    }
-
-                    BitmapData srcData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, bmp.PixelFormat);
-                    int bytesPerPixel = Image.GetPixelFormatSize(srcData.PixelFormat) / 8;
-
-                    int stride = srcData.Stride;
-
-                    IntPtr scan0 = srcData.Scan0;
-
-                    long[] totals = new long[] { 0, 0, 0 };
-
-                    int width = bmp.Width * bytesPerPixel;
-                    int height = bmp.Height;
-
-                    unsafe
-                    {
-                        byte* p = (byte*)(void*)scan0;
-
-                        for (int y = 0; y < height; y++)
-                        {
-                            for (int x = 0; x < width; x += bytesPerPixel)
-                            {
-                                totals[0] += p[x + 0];
-                                totals[1] += p[x + 1];
-                                totals[2] += p[x + 2];
-                            }
-
-                            p += stride;
-                        }
-                    }
-
-                    long pixelCount = bmp.Width * height;
-
-                    int avgB = Convert.ToInt32(totals[0] / pixelCount);
-                    int avgG = Convert.ToInt32(totals[1] / pixelCount);
-                    int avgR = Convert.ToInt32(totals[2] / pixelCount);
-
-                    bmp.UnlockBits(srcData);
-                    srcData = null;
-                    return Color.FromArgb(avgR, avgG, avgB);
-                }
             }
         }
     }
