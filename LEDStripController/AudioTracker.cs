@@ -14,11 +14,12 @@ namespace LEDStripController
     {
         public AudioTracker()
         {
+            mic.runTimer();
         }
         public struct Microphone
         {
-            private bool screaming = false;
-            private int screamCoolDownCounter = 0;
+            private static bool screaming = false;
+            private int screamCoolDownCounter;
 
             public string screamType
             {
@@ -32,7 +33,7 @@ namespace LEDStripController
                         {
                             return "YELLOWSCREAM";
                         }
-                        else if (level >= 20)
+                        else
                         {
                             return "REDSCREAM";
                         }
@@ -59,7 +60,7 @@ namespace LEDStripController
                 }
             }
 
-            private void runTimer()
+            public void runTimer()
             {
                 System.Timers.Timer aTimer = new System.Timers.Timer(10000);
 

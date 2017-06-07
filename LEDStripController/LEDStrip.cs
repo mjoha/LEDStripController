@@ -23,8 +23,6 @@ namespace LEDStripController
         private string profile;
         private string profileEvent = "NONE";
         private bool profileChanged = false;
-        private bool screaming = false;
-        private int screamCoolDownCounter = 0;
         private int numberOfLEDs;
         private bool turnedOn = true;
         private Socket sock = new Socket(AddressFamily.InterNetwork,SocketType.Dgram,ProtocolType.Udp);
@@ -40,7 +38,6 @@ namespace LEDStripController
             this.profile = prof;
             this.numberOfLEDs = num;
             initializeStrip();
-            runTimer();
             setLEDs();
         }
 
@@ -246,6 +243,16 @@ namespace LEDStripController
             }
         }
 
+        private void gamingProfile()
+        {
+            profileEvent = audio.mic.screamType;
+            if (profileEvent == "NONE")
+            {
+                this.Color = screen.getDominantColor();
+            }
+            setLEDs();
+        }
+
         private void musicProfile()
         {
 
@@ -271,18 +278,6 @@ namespace LEDStripController
                 colorChanged = false;
             }
         }
-
-        private void gamingProfile()
-        {
-            profileEvent = audio.mic.screamType;
-            if (profileEvent != "NONE")
-            {
-                this.Color = screen.getDominantColor();
-            }
-            setLEDs();
-        }
-
-
 
         private void sendUDP(string str)
         {
