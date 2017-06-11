@@ -7,16 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CSCore.CoreAudioAPI;
-using CSCore.SoundIn;
-using CSCore.Streams;
 
 namespace LEDStripController
 {
     public partial class MainForm : Form
     {
         private bool isTurnedOn = false;
-        private LEDStrip Strip = new LEDStrip(Color.Red,"192.168.0.36","CONSTANT",60);
+        private LEDStrip Strip = new LEDStrip(Color.Red,"CONSTANT",60);
 
 
         public MainForm()
@@ -46,7 +43,6 @@ namespace LEDStripController
             {
                 Strip.Profile = pickedProfile;
                 Strip.Color = colorBox.BackColor;
-                statusText.AppendText("Profile changed to: " + Strip.Profile + "\n");
             }
         }
 
@@ -61,7 +57,6 @@ namespace LEDStripController
                 if (pickedColor != Strip.Color)
                 {
                     Strip.Color = pickedColor;
-                    statusText.AppendText("Color changed to: " + Strip.Color.Name + "\n");
                 }
                 colorBox.BackColor = cDlg.Color;
             }
@@ -95,7 +90,7 @@ namespace LEDStripController
 
         private void InitializeTimer()
         {
-            mainTimer.Interval = 10;
+            mainTimer.Interval = 1;
             mainTimer.Tick += new EventHandler(mainTimer_Tick);
             mainTimer.Enabled = true;
         }
@@ -103,7 +98,7 @@ namespace LEDStripController
         //"main" loop
         private void mainTimer_Tick(object sender, EventArgs e)
         {
-            if (Strip.isAlive())
+            if (Strip.rpi.isConnected())
             {
                 profileSelectionBox.Enabled = true;
                 if ((Strip.Profile == "GAMING") || (Strip.Profile == "MUSIC") || (Strip.Profile== "DEMO"))
@@ -122,45 +117,5 @@ namespace LEDStripController
                 colorButton.Enabled = false;
             }
         }
-
-
-        //returns the current master level - 0 when silent
-        private float getMasterLevel()
-        {
-            return IsAudioPlaying(GetDefaultRenderDevice());
-        }
-        // Gets the default device for the system
-        public static MMDevice GetDefaultRenderDevice()
-        {
-            using (var enumerator = new MMDeviceEnumerator())
-            {
-                return enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Console);
-            }
-        }
-
-        // Checks if audio is playing on a certain device
-        public static float IsAudioPlaying(MMDevice device)
-        {
-            using (var meter = AudioMeterInformation.FromDevice(device))
-            {
-                return meter.PeakValue; ;// > 0;
-            }
-        }
-
-        private int getMicLevel()
-        {
-            //TO BE IMPLEMENTED
-            /*using (var capture = new WasapiCapture())
-            {
-                capture.Initialize();
-                using (var source = new SoundInSource(capture))
-                {
-                    capture.Start();
-                    capture.
-                }
-            }*/
-            return 0;
-        }
-
     }
 }

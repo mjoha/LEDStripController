@@ -19,7 +19,6 @@ namespace LEDStripController
     {
         private Color color;
         private bool colorChanged = false;
-        private string ipaddr;
         private string profile;
         private string profileEvent = "NONE";
         private bool profileChanged = false;
@@ -29,12 +28,12 @@ namespace LEDStripController
         private List<LED> LEDs = new List<LED>();
         private ScreenTracker screen = new ScreenTracker();
         private AudioTracker audio = new AudioTracker();
+        public RPiComm rpi = new RPiComm("192.168.0.36",5005);
 
 
-        public LEDStrip(Color col, string ip, string prof, int num)
+        public LEDStrip(Color col, string prof, int num)
         {
             this.color = col;
-            this.ipaddr = ip;
             this.profile = prof;
             this.numberOfLEDs = num;
             initializeStrip();
@@ -94,13 +93,19 @@ namespace LEDStripController
         //Output LEDs to RPi - per local definition
         private void setLEDs()
         {
-            string udpMessage = profile + ";" + profileEvent + ";";
+            string message = profile + ";" + profileEvent + ";";
             for (int i = 0; i < numberOfLEDs; i++)
             {
-                udpMessage = udpMessage + LEDs[i].Index.ToString() + ";" + LEDs[i].Red.ToString() + ";" + LEDs[i].Green.ToString() + ";" + LEDs[i].Blue.ToString() + ";" + LEDs[i].Brightness.ToString() + ";";
+                message = message + LEDs[i].Index.ToString() + ";" + LEDs[i].Red.ToString() + ";" + LEDs[i].Green.ToString() + ";" + LEDs[i].Blue.ToString() + ";" + LEDs[i].Brightness.ToString() + ";";
             }
-            sendUDP(udpMessage);
-
+            if (profile == "GAMING" || profile == "MUSIC")
+            {
+                rpi.sendMessage(message, false,1);
+            }
+            else
+            {
+                rpi.sendMessage(message, false);
+            }
         }
 
         //Getters and setters
@@ -118,12 +123,6 @@ namespace LEDStripController
                     LEDs[i].Blue = color.B;
                 }
             }
-        }
-
-        public string IPaddr
-        {
-            get { return ipaddr; }
-            set { ipaddr = value; }
         }
 
         public string Profile
@@ -183,20 +182,12 @@ namespace LEDStripController
         {
             if (profileChanged)
             {
-                //Send 10 messages.. since.. UDP
-                for (int i = 0; i < 5; i++)
-                {
-                    setLEDs();
-                }
+                setLEDs();
                 profileChanged = false;
             }
             if (colorChanged)
             {
-                //Send 10 messages.. since.. UDP
-                for (int i = 0; i < 5; i++)
-                {
-                    setLEDs();
-                }
+                setLEDs();
                 colorChanged = false;
             }
         }
@@ -205,19 +196,12 @@ namespace LEDStripController
         {
             if (profileChanged)
             {
-                //Send 10 messages.. since.. UDP
-                for (int i = 0; i < 5; i++)
-                {
-                    setLEDs();
-                }
+                setLEDs();
                 profileChanged = false;
             }
             if (colorChanged)
             {
-                for (int i = 0; i < 5; i++)
-                {
-                    setLEDs(); ;
-                }
+                setLEDs(); ;
                 colorChanged = false;
             }
         }
@@ -226,19 +210,12 @@ namespace LEDStripController
         {
             if (profileChanged)
             {
-                //Send 10 messages.. since.. UDP
-                for (int i = 0; i < 5; i++)
-                {
-                    setLEDs();
-                }
+                setLEDs();
                 profileChanged = false;
             }
             if (colorChanged)
             {
-                for (int i = 0; i < 5; i++)
-                {
-                    setLEDs();
-                }
+                setLEDs();
                 colorChanged = false;
             }
         }
@@ -255,38 +232,49 @@ namespace LEDStripController
 
         private void musicProfile()
         {
-
+            int startLeft = (numberOfLEDs/2) - 1;
+            int endLeft = 0;
+            int startRight = (numberOfLEDs / 2);
+            int endRight = numberOfLEDs - 1;
+            int currentVolume = audio.speakers.getPlaybackLevel(); 
+            decimal numActivedec = (numberOfLEDs/2) * (currentVolume/100m);
+            int numActive = (int)numActivedec;
+            for (int i = startRight; i <= endRight; i++)
+            {
+                if ((i - startRight) > numActive)
+                {
+                    LEDs[i].setColor(Color.Black);
+                }
+                else
+                {
+                    LEDs[i].setColor(this.Color);
+                }
+            }
+            for (int j = startLeft; j >= endLeft; j--)
+            {
+                if ((startLeft - j) < numActive)
+                {
+                    LEDs[j].setColor(this.Color);      
+                }
+                else
+                {
+                    LEDs[j].setColor(Color.Black);
+                }
+            }
+            setLEDs();
         }
 
         private void demoProfile()
         {
             if (profileChanged)
             {
-                //Send 10 messages.. since.. UDP
-                for (int i = 0; i < 10; i++)
-                {
-                    setLEDs();
-                }
+                setLEDs();
                 profileChanged = false;
             }
             if (colorChanged)
             {
-                for (int i = 0; i < 10; i++)
-                {
-                    setLEDs(); ;
-                }
+                setLEDs(); ;
                 colorChanged = false;
-            }
-        }
-
-        private void sendUDP(string str)
-        {
-            if (str != null)
-            {
-                IPAddress serverAddr = IPAddress.Parse(ipaddr);
-                IPEndPoint endPoint = new IPEndPoint(serverAddr, 5005);
-                byte[] sendBuffer = Encoding.ASCII.GetBytes(str);
-                sock.SendTo(sendBuffer, sendBuffer.Length, SocketFlags.None, endPoint);
             }
         }
     }

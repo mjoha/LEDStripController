@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.profileSelectionBox = new System.Windows.Forms.ComboBox();
-            this.statusText = new System.Windows.Forms.TextBox();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.colorButton = new System.Windows.Forms.Button();
             this.colorBox = new System.Windows.Forms.PictureBox();
@@ -60,18 +59,9 @@
             this.profileSelectionBox.TabIndex = 1;
             this.profileSelectionBox.SelectedIndexChanged += new System.EventHandler(this.profileSelectionBox_SelectedIndexChanged);
             // 
-            // statusText
-            // 
-            this.statusText.Location = new System.Drawing.Point(12, 104);
-            this.statusText.Multiline = true;
-            this.statusText.Name = "statusText";
-            this.statusText.ReadOnly = true;
-            this.statusText.Size = new System.Drawing.Size(152, 137);
-            this.statusText.TabIndex = 2;
-            // 
             // colorButton
             // 
-            this.colorButton.Location = new System.Drawing.Point(12, 247);
+            this.colorButton.Location = new System.Drawing.Point(12, 83);
             this.colorButton.Name = "colorButton";
             this.colorButton.Size = new System.Drawing.Size(109, 23);
             this.colorButton.TabIndex = 3;
@@ -81,7 +71,7 @@
             // 
             // colorBox
             // 
-            this.colorBox.Location = new System.Drawing.Point(128, 247);
+            this.colorBox.Location = new System.Drawing.Point(127, 73);
             this.colorBox.Name = "colorBox";
             this.colorBox.Size = new System.Drawing.Size(36, 33);
             this.colorBox.TabIndex = 4;
@@ -89,7 +79,7 @@
             // 
             // exitButton
             // 
-            this.exitButton.Location = new System.Drawing.Point(16, 276);
+            this.exitButton.Location = new System.Drawing.Point(12, 112);
             this.exitButton.Name = "exitButton";
             this.exitButton.Size = new System.Drawing.Size(75, 23);
             this.exitButton.TabIndex = 5;
@@ -120,12 +110,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.ClientSize = new System.Drawing.Size(180, 311);
+            this.ClientSize = new System.Drawing.Size(180, 160);
             this.Controls.Add(this.onButton);
             this.Controls.Add(this.exitButton);
             this.Controls.Add(this.colorBox);
             this.Controls.Add(this.colorButton);
-            this.Controls.Add(this.statusText);
             this.Controls.Add(this.profileSelectionBox);
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -143,7 +132,6 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox profileSelectionBox;
-        private System.Windows.Forms.TextBox statusText;
         private System.Windows.Forms.ColorDialog colorDialog;
         private System.Windows.Forms.Button colorButton;
         private System.Windows.Forms.PictureBox colorBox;

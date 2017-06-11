@@ -86,7 +86,12 @@ namespace LEDStripController
 
         public struct SpeakerOutput
         {
-
+            public int getPlaybackLevel()
+            {
+                MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
+                var device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                return (int)(device.AudioMeterInformation.MasterPeakValue * 100);
+            }
         }
         public Microphone mic = new Microphone();
         public SpeakerOutput speakers = new SpeakerOutput();
