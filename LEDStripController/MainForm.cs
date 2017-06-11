@@ -14,6 +14,8 @@ namespace LEDStripController
     {
         private bool isTurnedOn = false;
         private LEDStrip Strip = new LEDStrip(Color.Red,"CONSTANT",60);
+        private bool mouseDown;
+        private Point lastLocation;
 
 
         public MainForm()
@@ -32,6 +34,32 @@ namespace LEDStripController
             profileSelectionBox.Items.Add("DEMO");
             profileSelectionBox.SelectedItem = "CONSTANT";
             colorBox.BackColor = Color.Red;
+
+            IPtextBox.Text = Strip.rpi.IPAddr;
+            PortTextBox.Text = Strip.rpi.Port.ToString();
+            numLEDsTextBox.Text = Strip.NumberOfLEDs.ToString();
+        }
+
+        private void MainForm_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseDown = true;
+            lastLocation = e.Location;
+        }
+
+        private void MainForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (mouseDown)
+            {
+                this.Location = new Point(
+                    (this.Location.X - lastLocation.X) + e.X, (this.Location.Y - lastLocation.Y) + e.Y);
+
+                this.Update();
+            }
+        }
+
+        private void MainForm_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseDown = false;
         }
 
         private void profileSelectionBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -46,21 +74,6 @@ namespace LEDStripController
             }
         }
 
-        private void colorBotton_Click(object sender, EventArgs e)
-        {
-            ColorDialog cDlg = new ColorDialog();
-            cDlg.ShowDialog();
-            if (cDlg.ShowDialog() == DialogResult.OK)
-            {
-                Color pickedColor;
-                pickedColor = cDlg.Color;
-                if (pickedColor != Strip.Color)
-                {
-                    Strip.Color = pickedColor;
-                }
-                colorBox.BackColor = cDlg.Color;
-            }
-        }
 
         private void exitButton_Click(object sender, EventArgs e)
         {
@@ -103,19 +116,49 @@ namespace LEDStripController
                 profileSelectionBox.Enabled = true;
                 if ((Strip.Profile == "GAMING") || (Strip.Profile == "MUSIC") || (Strip.Profile== "DEMO"))
                 {
-                    colorButton.Enabled = false;
+                    colorBox.Enabled = false;
                 }
                 else
                 {
-                    colorButton.Enabled = true;
+                    colorBox.Enabled = true;
                 }
                 Strip.updateLEDs();
             }
             else
             {
                 profileSelectionBox.Enabled = false;
-                colorButton.Enabled = false;
+                colorBox.Enabled = false;
             }
+        }
+
+        private void colorBox_Click(object sender, EventArgs e)
+        {
+            ColorDialog cDlg = new ColorDialog();
+            if (cDlg.ShowDialog() == DialogResult.OK)
+            {
+                Color pickedColor;
+                pickedColor = cDlg.Color;
+                if (pickedColor != Strip.Color)
+                {
+                    Strip.Color = pickedColor;
+                }
+                colorBox.BackColor = cDlg.Color;
+            }
+        }
+
+        private void IPtextBox_TextChanged(object sender, EventArgs e)
+        {
+            Strip.rpi.IPAddr = IPtextBox.Text;
+        }
+
+        private void PortTextBox_TextChanged(object sender, EventArgs e)
+        {
+            Strip.rpi.Port = int.Parse(PortTextBox.Text);
+        }
+
+        private void numLEDsTextBox_TextChanged(object sender, EventArgs e)
+        {
+            Strip.NumberOfLEDs = int.Parse(numLEDsTextBox.Text);
         }
     }
 }

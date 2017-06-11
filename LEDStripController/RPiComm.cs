@@ -21,7 +21,7 @@ namespace LEDStripController
             connect(ipaddr, port);
         }
 
-        public String UDPIPAddr
+        public String IPAddr
         {
             get { return ipaddr; }
             set
