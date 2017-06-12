@@ -38,6 +38,7 @@ namespace LEDStripController
             this.numberOfLEDs = num;
             initializeStrip();
             setLEDs();
+            runTimer();
         }
 
         //Initialize strip
@@ -76,20 +77,6 @@ namespace LEDStripController
             turnedOn = on;
         }
 
-
-        //Should check if RPi is up and running
-        public bool isAlive()
-        {
-            if (turnedOn)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         //Output LEDs to RPi - per local definition
         private void setLEDs()
         {
@@ -100,11 +87,11 @@ namespace LEDStripController
             }
             if (profile == "GAMING" || profile == "MUSIC")
             {
-                rpi.sendMessage(message, false,1);
+                rpi.sendMessage(message, 1);
             }
             else
             {
-                rpi.sendMessage(message, false);
+                rpi.sendMessage(message);
             }
         }
 
@@ -177,7 +164,20 @@ namespace LEDStripController
             }
         }
 
-        //Constant lightning - no need to send continusly unless the color has been changed
+        private void runTimer()
+        {
+            System.Timers.Timer aTimer = new System.Timers.Timer(10000);
+
+            aTimer.Elapsed += new ElapsedEventHandler(RunEvent);
+            aTimer.Interval = 5;
+            aTimer.Enabled = true;
+        }
+
+        private void RunEvent(object source, ElapsedEventArgs e)
+        {
+            updateLEDs();
+        }
+
         private void constantProfile()
         {
             if (profileChanged)

@@ -42,15 +42,16 @@
             this.settingsPage = new System.Windows.Forms.TabPage();
             this.settingsControl = new System.Windows.Forms.TabControl();
             this.RPiPage = new System.Windows.Forms.TabPage();
+            this.rpiSettingsButton = new System.Windows.Forms.Button();
+            this.numLEDsTextBox = new System.Windows.Forms.TextBox();
+            this.PortTextBox = new System.Windows.Forms.TextBox();
+            this.IPtextBox = new System.Windows.Forms.TextBox();
+            this.NumLEDsLabel = new System.Windows.Forms.Label();
+            this.PortLabel = new System.Windows.Forms.Label();
+            this.IPLabel = new System.Windows.Forms.Label();
             this.PrioPage = new System.Windows.Forms.TabPage();
             this.ProfilePage = new System.Windows.Forms.TabPage();
             this.ApplicationPage = new System.Windows.Forms.TabPage();
-            this.IPLabel = new System.Windows.Forms.Label();
-            this.PortLabel = new System.Windows.Forms.Label();
-            this.NumLEDsLabel = new System.Windows.Forms.Label();
-            this.IPtextBox = new System.Windows.Forms.TextBox();
-            this.PortTextBox = new System.Windows.Forms.TextBox();
-            this.numLEDsTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.colorBox)).BeginInit();
             this.mainTabControl.SuspendLayout();
             this.manPage.SuspendLayout();
@@ -178,6 +179,7 @@
             // 
             // RPiPage
             // 
+            this.RPiPage.Controls.Add(this.rpiSettingsButton);
             this.RPiPage.Controls.Add(this.numLEDsTextBox);
             this.RPiPage.Controls.Add(this.PortTextBox);
             this.RPiPage.Controls.Add(this.IPtextBox);
@@ -191,6 +193,64 @@
             this.RPiPage.TabIndex = 0;
             this.RPiPage.Text = "RASPBERRY";
             this.RPiPage.UseVisualStyleBackColor = true;
+            // 
+            // rpiSettingsButton
+            // 
+            this.rpiSettingsButton.Location = new System.Drawing.Point(278, 132);
+            this.rpiSettingsButton.Name = "rpiSettingsButton";
+            this.rpiSettingsButton.Size = new System.Drawing.Size(77, 27);
+            this.rpiSettingsButton.TabIndex = 6;
+            this.rpiSettingsButton.Text = "Change";
+            this.rpiSettingsButton.UseVisualStyleBackColor = true;
+            this.rpiSettingsButton.Click += new System.EventHandler(this.rpiSettingsButton_Click);
+            // 
+            // numLEDsTextBox
+            // 
+            this.numLEDsTextBox.Location = new System.Drawing.Point(154, 81);
+            this.numLEDsTextBox.Name = "numLEDsTextBox";
+            this.numLEDsTextBox.Size = new System.Drawing.Size(52, 26);
+            this.numLEDsTextBox.TabIndex = 5;
+            // 
+            // PortTextBox
+            // 
+            this.PortTextBox.Location = new System.Drawing.Point(154, 48);
+            this.PortTextBox.Name = "PortTextBox";
+            this.PortTextBox.Size = new System.Drawing.Size(52, 26);
+            this.PortTextBox.TabIndex = 4;
+            // 
+            // IPtextBox
+            // 
+            this.IPtextBox.Location = new System.Drawing.Point(94, 15);
+            this.IPtextBox.Name = "IPtextBox";
+            this.IPtextBox.Size = new System.Drawing.Size(112, 26);
+            this.IPtextBox.TabIndex = 3;
+            // 
+            // NumLEDsLabel
+            // 
+            this.NumLEDsLabel.AutoSize = true;
+            this.NumLEDsLabel.Location = new System.Drawing.Point(108, 84);
+            this.NumLEDsLabel.Name = "NumLEDsLabel";
+            this.NumLEDsLabel.Size = new System.Drawing.Size(40, 18);
+            this.NumLEDsLabel.TabIndex = 2;
+            this.NumLEDsLabel.Text = "LEDs:";
+            // 
+            // PortLabel
+            // 
+            this.PortLabel.AutoSize = true;
+            this.PortLabel.Location = new System.Drawing.Point(110, 51);
+            this.PortLabel.Name = "PortLabel";
+            this.PortLabel.Size = new System.Drawing.Size(38, 18);
+            this.PortLabel.TabIndex = 1;
+            this.PortLabel.Text = "Port:";
+            // 
+            // IPLabel
+            // 
+            this.IPLabel.AutoSize = true;
+            this.IPLabel.Location = new System.Drawing.Point(64, 18);
+            this.IPLabel.Name = "IPLabel";
+            this.IPLabel.Size = new System.Drawing.Size(24, 18);
+            this.IPLabel.TabIndex = 0;
+            this.IPLabel.Text = "IP:";
             // 
             // PrioPage
             // 
@@ -220,57 +280,6 @@
             this.ApplicationPage.Text = "APP";
             this.ApplicationPage.UseVisualStyleBackColor = true;
             // 
-            // IPLabel
-            // 
-            this.IPLabel.AutoSize = true;
-            this.IPLabel.Location = new System.Drawing.Point(11, 18);
-            this.IPLabel.Name = "IPLabel";
-            this.IPLabel.Size = new System.Drawing.Size(24, 18);
-            this.IPLabel.TabIndex = 0;
-            this.IPLabel.Text = "IP:";
-            // 
-            // PortLabel
-            // 
-            this.PortLabel.AutoSize = true;
-            this.PortLabel.Location = new System.Drawing.Point(108, 51);
-            this.PortLabel.Name = "PortLabel";
-            this.PortLabel.Size = new System.Drawing.Size(38, 18);
-            this.PortLabel.TabIndex = 1;
-            this.PortLabel.Text = "Port:";
-            // 
-            // NumLEDsLabel
-            // 
-            this.NumLEDsLabel.AutoSize = true;
-            this.NumLEDsLabel.Location = new System.Drawing.Point(106, 84);
-            this.NumLEDsLabel.Name = "NumLEDsLabel";
-            this.NumLEDsLabel.Size = new System.Drawing.Size(40, 18);
-            this.NumLEDsLabel.TabIndex = 2;
-            this.NumLEDsLabel.Text = "LEDs:";
-            // 
-            // IPtextBox
-            // 
-            this.IPtextBox.Location = new System.Drawing.Point(41, 15);
-            this.IPtextBox.Name = "IPtextBox";
-            this.IPtextBox.Size = new System.Drawing.Size(165, 26);
-            this.IPtextBox.TabIndex = 3;
-            this.IPtextBox.TextChanged += new System.EventHandler(this.IPtextBox_TextChanged);
-            // 
-            // PortTextBox
-            // 
-            this.PortTextBox.Location = new System.Drawing.Point(152, 48);
-            this.PortTextBox.Name = "PortTextBox";
-            this.PortTextBox.Size = new System.Drawing.Size(54, 26);
-            this.PortTextBox.TabIndex = 4;
-            this.PortTextBox.TextChanged += new System.EventHandler(this.PortTextBox_TextChanged);
-            // 
-            // numLEDsTextBox
-            // 
-            this.numLEDsTextBox.Location = new System.Drawing.Point(152, 81);
-            this.numLEDsTextBox.Name = "numLEDsTextBox";
-            this.numLEDsTextBox.Size = new System.Drawing.Size(54, 26);
-            this.numLEDsTextBox.TabIndex = 5;
-            this.numLEDsTextBox.TextChanged += new System.EventHandler(this.numLEDsTextBox_TextChanged);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -283,6 +292,7 @@
             this.Controls.Add(this.AppLabel);
             this.Controls.Add(this.exitButton);
             this.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ForeColor = System.Drawing.Color.Black;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MainForm";
             this.Text = "LED Strip Controller";
@@ -325,6 +335,7 @@
         private System.Windows.Forms.TextBox numLEDsTextBox;
         private System.Windows.Forms.TextBox PortTextBox;
         private System.Windows.Forms.TextBox IPtextBox;
+        private System.Windows.Forms.Button rpiSettingsButton;
     }
 }
 

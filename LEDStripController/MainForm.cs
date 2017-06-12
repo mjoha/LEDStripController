@@ -103,29 +103,31 @@ namespace LEDStripController
 
         private void InitializeTimer()
         {
-            mainTimer.Interval = 1;
+            mainTimer.Interval = 3000;
             mainTimer.Tick += new EventHandler(mainTimer_Tick);
             mainTimer.Enabled = true;
         }
 
-        //"main" loop
         private void mainTimer_Tick(object sender, EventArgs e)
         {
-            if (Strip.rpi.isConnected())
+            if (Strip.rpi.connected)
             {
+                AppLabel.Text = "LED CONTROLLER - CONNECTED";
+                onButton.ForeColor = Color.Green;
                 profileSelectionBox.Enabled = true;
                 if ((Strip.Profile == "GAMING") || (Strip.Profile == "MUSIC") || (Strip.Profile== "DEMO"))
                 {
                     colorBox.Enabled = false;
-                }
+                } 
                 else
                 {
                     colorBox.Enabled = true;
                 }
-                Strip.updateLEDs();
             }
             else
             {
+                onButton.ForeColor = Color.Red;
+                AppLabel.Text = "LED CONTROLLER - NOT CONNECTED";
                 profileSelectionBox.Enabled = false;
                 colorBox.Enabled = false;
             }
@@ -146,19 +148,19 @@ namespace LEDStripController
             }
         }
 
-        private void IPtextBox_TextChanged(object sender, EventArgs e)
+        private void rpiSettingsButton_Click(object sender, EventArgs e)
         {
             Strip.rpi.IPAddr = IPtextBox.Text;
-        }
-
-        private void PortTextBox_TextChanged(object sender, EventArgs e)
-        {
             Strip.rpi.Port = int.Parse(PortTextBox.Text);
-        }
-
-        private void numLEDsTextBox_TextChanged(object sender, EventArgs e)
-        {
             Strip.NumberOfLEDs = int.Parse(numLEDsTextBox.Text);
+            if (Strip.rpi.checkConnection())
+            {
+                AppLabel.Text = "LED CONTROLLER - NOT CONNECTED";
+            }
+            else
+            {
+                AppLabel.Text = "LED CONTROLLER - CONNECTED";
+            }
         }
     }
 }

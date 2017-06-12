@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace LEDStripController
 {
@@ -13,12 +15,14 @@ namespace LEDStripController
         private string ipaddr;
         private int port;
         private Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        public bool connected = false;
 
         public RPiComm(string ip, int p)
         {
             ipaddr = ip;
             port = p;
-            connect(ipaddr, port);
+            runTimer();
+            connected = checkConnection();
         }
 
         public String IPAddr
@@ -27,7 +31,6 @@ namespace LEDStripController
             set
             {
                 ipaddr = value;
-                connect(ipaddr, port);
             }
         }
         public int Port
@@ -36,34 +39,32 @@ namespace LEDStripController
             set
             {
                 port = value;
-                connect(ipaddr, port);
             }
         }
 
-        public bool connect(string ip, int port)
-        {
-            return true;
-        }
 
-        public bool isConnected()
+        public bool checkConnection()
         {
-            return true;
-        }
-
-        public bool sendMessage(string message, bool acknowledge, int count = 5)
-        {
-            if (acknowledge)
+            Ping pinger = new Ping();
+            bool pingable = false;
+            try
             {
-                //TODO
-                return false;
+                PingReply reply = pinger.Send(IPAddress.Parse(ipaddr), 20);
+                pingable = reply.Status == IPStatus.Success;
             }
-            else
+            catch (PingException)
             {
-                for (int i = 0; i <= count; i++)
-                {
-                    sendUDP(message);
-                }
-                return true;
+                //disregard and return false
+            }
+            connected = pingable;
+            return pingable;
+        }
+
+        public void sendMessage(string message, int count = 5)
+        {
+            for (int i = 0; i <= count; i++)
+            {
+                sendUDP(message);
             }
         }
         private void sendUDP(string message)
@@ -75,6 +76,20 @@ namespace LEDStripController
                 byte[] sendBuffer = Encoding.ASCII.GetBytes(message);
                 sock.SendTo(sendBuffer, sendBuffer.Length, SocketFlags.None, endPoint);
             }
+        }
+
+        private void runTimer()
+        {
+            System.Timers.Timer aTimer = new System.Timers.Timer(10000);
+
+            aTimer.Elapsed += new ElapsedEventHandler(RunEvent);
+            aTimer.Interval = 10000;
+            aTimer.Enabled = true;
+        }
+
+        private void RunEvent(object source, ElapsedEventArgs e)
+        {
+            connected = checkConnection();
         }
     }
 }
